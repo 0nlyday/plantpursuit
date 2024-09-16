@@ -3,7 +3,8 @@ import 'package:image_picker/image_picker.dart';
 import 'register.dart'; // Import the RegisterPage
 import 'signin.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:plantpursuit/login.dart'; // ปรับเส้นทางการ import ตามโครงสร้างโปรเจคของคุณ
+import 'package:plantpursuit/login.dart'; 
+import 'fav.dart'; // Import หน้าของ FavoritePage 111
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,13 +41,13 @@ class PlantPursuitPage extends StatefulWidget {
 // State class for PlantPursuitPage
 class _PlantPursuitPageState extends State<PlantPursuitPage> {
   int _selectedIndex = 0; // Index for the BottomNavigationBar's selected item
+  final ImagePicker _picker = ImagePicker(); // Initialize ImagePicker once
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: const Icon(Icons.eco),
-        // Leading icon in the AppBar
         title: const Text('PlantPursuit'), // Title in the AppBar
         backgroundColor: const Color.fromRGBO(
             78, 167, 113, 1.000), // Background color of the AppBar
@@ -75,10 +76,10 @@ class _PlantPursuitPageState extends State<PlantPursuitPage> {
                         _openSearchPage(context)), // Button to open search page
                 const SizedBox(height: 20), // Spacing between buttons
                 _buildButton(Icons.camera_alt, 'กล้อง',
-                    () => _openCamera(context)), // Button to open camera
+                    () => _pickImage(ImageSource.camera)), // Refactored camera action
                 const SizedBox(height: 20), // Spacing between buttons
                 _buildButton(Icons.image, 'แกลลอรี่',
-                    () => _openGallery(context)), // Button to open gallery
+                    () => _pickImage(ImageSource.gallery)), // Refactored gallery action
               ],
             ),
           ),
@@ -94,8 +95,8 @@ class _PlantPursuitPageState extends State<PlantPursuitPage> {
               icon: Icon(Icons.person), label: 'โปรไฟล์'), // Profile tab
         ],
         currentIndex: _selectedIndex, // Set the selected tab index
-        selectedItemColor: Color.fromRGBO(
-              78, 167, 113, 1.000), // Color of the selected item
+        selectedItemColor: const Color.fromRGBO(
+            78, 167, 113, 1.000), // Color of the selected item
         onTap: (index) => _onItemTapped(index, context), // Handle tab selection
       ),
     );
@@ -147,23 +148,13 @@ class _PlantPursuitPageState extends State<PlantPursuitPage> {
     );
   }
 
-  // Method to open the camera and capture an image
-  void _openCamera(BuildContext context) async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-    if (photo != null) {
-      // If a photo is taken, show a success message
-      _showSnackBar('ถ่ายภาพสำเร็จ');
-    }
-  }
-
-  // Method to open the gallery and pick an image
-  void _openGallery(BuildContext context) async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+  // Refactored method to handle both camera and gallery image picking
+  void _pickImage(ImageSource source) async {
+    final XFile? image = await _picker.pickImage(source: source);
     if (image != null) {
-      // If an image is picked, show a success message
-      _showSnackBar('เลือกรูปภาพสำเร็จ');
+      _showSnackBar(source == ImageSource.camera
+          ? 'ถ่ายภาพสำเร็จ'
+          : 'เลือกรูปภาพสำเร็จ');
     }
   }
 
