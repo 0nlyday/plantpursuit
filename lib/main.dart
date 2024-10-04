@@ -5,6 +5,8 @@ import 'signin.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:plantpursuit/login.dart'; 
 import 'fav.dart'; // Import หน้าของ FavoritePage 111
+import 'fav.dart'; // Import หน้าของ FavoritePage
+// >>>>>>> 0bca7d7 (new)
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,20 +1,36 @@
 import 'package:flutter/material.dart';
 
-class FavoritePage extends StatelessWidget {
-  final List<Map<String, String>> favoriteVegetables = [
+class FavoritePage extends StatefulWidget {
+  @override
+  _FavoritePageState createState() => _FavoritePageState();
+}
+
+class _FavoritePageState extends State<FavoritePage> {
+  // รายการผักที่ผู้ใช้ถูกใจ
+  List<Map<String, String>> favoriteVegetables = [
     {
       'name': 'Basil',
-      'image': 'assets/basil.jpg', // Replace with your image asset path
+      'image': 'assets/basil.jpg', // แทนที่ด้วยเส้นทางของรูปภาพของคุณ
     },
     {
       'name': 'Mint',
-      'image': 'assets/mint.jpg', // Replace with your image asset path
+      'image': 'assets/mint.jpg', // แทนที่ด้วยเส้นทางของรูปภาพของคุณ
     },
     {
       'name': 'Red Leaf',
-      'image': 'assets/red_leaf.jpg', // Replace with your image asset path
+      'image': 'assets/red_leaf.jpg', // แทนที่ด้วยเส้นทางของรูปภาพของคุณ
     },
   ];
+
+  // สถานะการแก้ไข
+  bool isEditMode = false;
+
+  // ฟังก์ชันลบรายการออกจากลิสต์
+  void removeItem(int index) {
+    setState(() {
+      favoriteVegetables.removeAt(index);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +40,7 @@ class FavoritePage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context); // ย้อนกลับไปหน้าก่อนหน้า
           },
         ),
         title: Text(
@@ -33,9 +49,11 @@ class FavoritePage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.edit, color: Colors.black),
+            icon: Icon(isEditMode ? Icons.check : Icons.edit, color: Colors.black),
             onPressed: () {
-              // Edit action
+              setState(() {
+                isEditMode = !isEditMode; // สลับโหมดแก้ไข
+              });
             },
           ),
         ],
@@ -65,6 +83,14 @@ class FavoritePage extends StatelessWidget {
                   favoriteVegetables[index]['name']!,
                   style: TextStyle(fontSize: 18),
                 ),
+                trailing: isEditMode
+                    ? IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          removeItem(index); // ลบรายการ
+                        },
+                      )
+                    : null,
               ),
             );
           },
@@ -86,10 +112,13 @@ class FavoritePage extends StatelessWidget {
             label: 'Profile',
           ),
         ],
-        currentIndex: 1, // Set this to 1 since we're on the "Favorite" page
+        currentIndex: 1, // หน้าปัจจุบันคือ Favorite
         selectedItemColor: Colors.black,
         onTap: (int index) {
-          // Handle navigation tap
+          if (index == 0) {
+            Navigator.pushReplacementNamed(context, '/main'); // ลิงค์ไปหน้า main.dart
+          }
+          // คุณสามารถเพิ่มการจัดการสำหรับการ tab อื่นๆ ได้ที่นี่
         },
       ),
     );
